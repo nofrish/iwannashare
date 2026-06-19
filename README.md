@@ -12,6 +12,68 @@ The first release intentionally ships one theme: `default`. It is optimized for 
 
 ## Quick Start
 
+Clone the repo and install both the CLI and the Codex Skill:
+
+```bash
+git clone https://github.com/nofrish/iwannashare.git
+cd iwannashare
+./scripts/install.sh
+```
+
+The installer:
+
+- installs the `iws` / `iwannashare` CLI globally through npm
+- copies `skills/iwannashare` to `${CODEX_HOME:-$HOME/.codex}/skills/iwannashare`
+
+Set `CODEX_HOME` before running the installer if your Codex skills live somewhere else.
+
+Restart Codex after installing the skill.
+
+Check the CLI:
+
+```bash
+iws doctor
+```
+
+Render Markdown from stdin:
+
+```bash
+iws --copy --open <<'MD'
+---
+title: My Share Note
+date: 2026-06-20
+---
+
+This is the content to share.
+MD
+```
+
+Render a Markdown file:
+
+```bash
+iws ./my-note.md --output ./share.png --copy --open
+```
+
+## Codex Skill
+
+This repo includes a Codex Skill at `skills/iwannashare`.
+
+The recommended installer above installs it locally. If you only want to install the Skill through Codex's skill installer, ask Codex to install:
+
+```text
+https://github.com/nofrish/iwannashare/tree/main/skills/iwannashare
+```
+
+The Skill assumes the `iws` command is available. Install the CLI separately when using this Skill-only path:
+
+```bash
+npm install -g github:nofrish/iwannashare
+```
+
+## Development
+
+Local development:
+
 ```bash
 npm install
 npm run doctor
@@ -24,7 +86,7 @@ The example output is written to:
 examples/output/default.png
 ```
 
-Render your own Markdown:
+Render your own Markdown during development:
 
 ```bash
 npm run dev -- ./my-note.md --output ./share.png
@@ -36,7 +98,7 @@ Render Markdown from stdin:
 cat ./my-note.md | npm run dev -- --output ./share.png
 ```
 
-For agent workflows, a heredoc is often the simplest form:
+For agent workflows during development, a heredoc is often the simplest form:
 
 ```bash
 npm run dev -- --copy <<'MD'
@@ -134,6 +196,8 @@ Use IWannaShare when the user wants to share text-heavy content as an image: an 
 
 Before rendering, check the local renderer once with `iws doctor`. If you are inside the IWannaShare repository, use `npm run doctor`.
 
+If `iws` is not installed, install it with `npm install -g github:nofrish/iwannashare`.
+
 Render from stdin when possible: `iws --output <output-file.png>`. Use a Markdown file path when the content already exists as a file: `iws <markdown-file> --output <output-file.png>`. If the user wants to paste the image directly, add `--copy` to copy the PNG to the macOS clipboard. If the user wants to review the result immediately, add `--open` to open the PNG after rendering. If you are inside the repository, use `npm run dev -- --output <output-file.png>` for stdin or `npm run dev -- <markdown-file> --output <output-file.png>` for file input.
 
 Markdown requirements:
@@ -205,7 +269,7 @@ src/
 
 The renderer is intentionally isolated. The first implementation uses HTML/CSS plus a local Chrome-compatible browser, but the parser and theme layer do not depend on Playwright directly.
 
-## Development
+## Quality Checks
 
 ```bash
 npm run check

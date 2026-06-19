@@ -1,0 +1,4 @@
+interface:
+  display_name: "IWannaShare"
+  short_description: "把 Markdown 和 AI 答案生成可分享长图"
+  default_prompt: "Use $iwannashare to turn this answer into a shareable long PNG image."

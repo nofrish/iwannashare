@@ -15,6 +15,7 @@
   "scripts": {
     "build": "tsup",
     "postbuild": "chmod +x dist/cli.js",
+    "prepare": "npm run build",
     "dev": "tsx src/cli.ts",
     "check": "tsc --noEmit",
     "test": "vitest run",
