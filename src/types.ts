@@ -91,11 +91,18 @@ export interface LongThemeTokens {
   };
 }
 
-export interface RenderOptions {
-  input: string;
-  output: string;
-  browserPath?: string;
-}
+export type RenderOptions =
+  | {
+      input: string;
+      output: string;
+      browserPath?: string;
+    }
+  | {
+      markdown: string;
+      inputLabel: string;
+      output: string;
+      browserPath?: string;
+    };
 
 export interface BrowserCheck {
   ok: boolean;

@@ -14,9 +14,9 @@ export interface RenderResult {
 }
 
 export async function renderMarkdownToImage(options: RenderOptions): Promise<RenderResult> {
-  const inputPath = path.resolve(options.input);
+  const inputPath = 'input' in options ? path.resolve(options.input) : options.inputLabel;
   const outputPath = path.resolve(options.output);
-  const markdown = await readFile(inputPath, 'utf8');
+  const markdown = 'input' in options ? await readFile(inputPath, 'utf8') : options.markdown;
   const document = parseMarkdown(markdown);
   const theme = getTheme('default');
   const renderInput = {

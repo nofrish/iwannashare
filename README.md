@@ -30,6 +30,37 @@ Render your own Markdown:
 npm run dev -- ./my-note.md --output ./share.png
 ```
 
+Render Markdown from stdin:
+
+```bash
+cat ./my-note.md | npm run dev -- --output ./share.png
+```
+
+For agent workflows, a heredoc is often the simplest form:
+
+```bash
+npm run dev -- --copy <<'MD'
+---
+title: My Share Note
+date: 2026-06-20
+---
+
+This is the content to share.
+MD
+```
+
+Render and copy the PNG image to the macOS clipboard:
+
+```bash
+npm run dev -- ./my-note.md --output ./share.png --copy
+```
+
+Render and open the PNG image for review:
+
+```bash
+npm run dev -- ./my-note.md --output ./share.png --open
+```
+
 After building:
 
 ```bash
@@ -103,7 +134,7 @@ Use IWannaShare when the user wants to share text-heavy content as an image: an 
 
 Before rendering, check the local renderer once with `iws doctor`. If you are inside the IWannaShare repository, use `npm run doctor`.
 
-Create a Markdown file, then render it with `iws <markdown-file> --output <output-file.png>`. If you are inside the repository, use `npm run dev -- <markdown-file> --output <output-file.png>`.
+Render from stdin when possible: `iws --output <output-file.png>`. Use a Markdown file path when the content already exists as a file: `iws <markdown-file> --output <output-file.png>`. If the user wants to paste the image directly, add `--copy` to copy the PNG to the macOS clipboard. If the user wants to review the result immediately, add `--open` to open the PNG after rendering. If you are inside the repository, use `npm run dev -- --output <output-file.png>` for stdin or `npm run dev -- <markdown-file> --output <output-file.png>` for file input.
 
 Markdown requirements:
 - Add frontmatter with a concise `title` and, when useful, `date` in `YYYY-MM-DD` format.
@@ -121,7 +152,9 @@ Markdown requirements:
 
 After rendering:
 - Return the PNG path.
-- Return the Markdown source path.
+- Return the Markdown source path if one was created; otherwise say stdin was used.
+- If `--copy` was used successfully, tell the user the image is ready to paste.
+- If `--open` was used successfully, tell the user the image has been opened for review.
 - Mention any rendering failure and the command that failed.
 - If the user asked for review, ask them to inspect the PNG before sending it to others.
 ```
