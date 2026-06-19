@@ -1,0 +1,54 @@
+{
+  "name": "iwannashare",
+  "version": "0.1.0",
+  "description": "Turn Markdown and AI responses into beautiful shareable long images.",
+  "type": "module",
+  "bin": {
+    "iwannashare": "./dist/cli.js",
+    "iws": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "postbuild": "chmod +x dist/cli.js",
+    "dev": "tsx src/cli.ts",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "lint": "eslint .",
+    "render:example": "tsx src/cli.ts examples/ai-share.md --output examples/output/default.png",
+    "doctor": "tsx src/cli.ts doctor"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@daihaus/lxgw-bright": "^2.0.0",
+    "@types/mdast": "^4.0.4",
+    "commander": "^14.0.0",
+    "hast-util-to-html": "^9.0.5",
+    "mdast-util-gfm": "^3.1.0",
+    "mdast-util-to-hast": "^13.2.0",
+    "playwright-core": "^1.56.1",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.3",
+    "vitest": "^4.0.10"
+  },
+  "overrides": {
+    "esbuild": "^0.28.1"
+  }
+}
