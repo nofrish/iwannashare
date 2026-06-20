@@ -207,6 +207,7 @@ Markdown requirements:
 - Prefer Chinese output when the source conversation is Chinese.
 - Use standard Markdown: headings, paragraphs, bold text, ordered lists, unordered lists, inline code, code blocks, and tables.
 - Keep headings short. Avoid making every paragraph a list item.
+- Assume the final PNG is mainly read on phones. Avoid wide Markdown tables. If content naturally looks like a table but has more than 2 columns, long cells, or comparison-heavy information, convert it into mobile-friendly lists, grouped sections, or short labeled bullets. Preserve all facts and relationships. Use tables only for compact 2-column key-value data or small datasets that remain readable on a narrow screen.
 - Use callouts sparingly:
   - `> [!KEY]` for the central takeaway
   - `> [!NOTE]` for helpful context

@@ -53,6 +53,8 @@ Use normal Markdown: headings, paragraphs, bold text, ordered/unordered lists, i
 
 Keep headings short and avoid turning every paragraph into a list item. Preserve hierarchy more than density.
 
+Assume the final PNG is mainly read on phones. Avoid wide Markdown tables. If content naturally looks like a table but has more than 2 columns, long cells, or comparison-heavy information, convert it into mobile-friendly lists, grouped sections, or short labeled bullets. Preserve all facts and relationships. Use tables only for compact 2-column key-value data or small datasets that remain readable on a narrow screen.
+
 Use callouts sparingly:
 
 ```md
