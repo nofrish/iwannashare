@@ -54,14 +54,15 @@ Useful options:
 
 1. Convert the final content into concise Markdown.
 2. Add frontmatter with a short `title`; add `date` as `YYYY-MM-DD` when useful; add `slug` only when publishing and a stable URL slug is obvious.
-3. Preserve the user's meaning exactly. Do not invent facts, claims, numbers, sources, or conclusions.
-4. Clean filler and improve structure only when it does not change substance.
-5. Prefer Chinese when the conversation is Chinese.
-6. For image sharing, render through stdin unless the Markdown already exists as a file.
-7. Use `--copy` when the user wants direct paste/share behavior.
-8. Use `--open` when the user wants to inspect the result immediately.
-9. For public links, use `iws publish` instead of PNG rendering.
-10. Report the PNG path or public URL. If clipboard copy succeeded, say it is ready to paste.
+3. When frontmatter has `title`, do not repeat the same title as the first `# H1` in the body. Start the body with prose or `##` sections.
+4. Preserve the user's meaning exactly. Do not invent facts, claims, numbers, sources, or conclusions.
+5. Clean filler and improve structure only when it does not change substance.
+6. Prefer Chinese when the conversation is Chinese.
+7. For image sharing, render through stdin unless the Markdown already exists as a file.
+8. Use `--copy` when the user wants direct paste/share behavior.
+9. Use `--open` when the user wants to inspect the result immediately.
+10. For public links, use `iws publish` instead of PNG rendering.
+11. Report the PNG path or public URL. If clipboard copy succeeded, say it is ready to paste.
 
 ## Web Publishing
 
