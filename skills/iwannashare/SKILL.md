@@ -75,6 +75,10 @@ If publish config is missing, tell the user to configure it:
 iws config init --repo-path /path/to/github-pages-repo --base-url https://share.example.com
 ```
 
+Use `--content-dir ""` when the publishing repo is dedicated to this share
+site and URLs should be rooted at the domain, for example
+`https://share.example.com/2026/06/my-note/`.
+
 Prefer `--copy-url` for conversational workflows so the user can paste the URL directly. Use `--open` when the user wants to review the published page.
 
 ## Markdown Guidance

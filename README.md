@@ -171,8 +171,9 @@ Create the local config:
 
 ```bash
 iws config init \
-  --repo-path ~/Projects/nofrish/nofrish-share \
+  --repo-path ~/Documents/share.example.com \
   --base-url https://share.example.com \
+  --content-dir "" \
   --site-name IWannaShare
 ```
 
@@ -190,12 +191,16 @@ Config shape:
     "repoPath": "/path/to/github-pages-repo",
     "baseUrl": "https://share.example.com",
     "branch": "main",
-    "contentDir": "share",
+    "contentDir": "",
     "assetsDir": "assets/iwannashare",
     "siteName": "IWannaShare"
   }
 }
 ```
+
+With an empty `contentDir`, published URLs use the site root, for example
+`https://share.example.com/2026/06/my-note/`. Set `contentDir` only when you
+intentionally want a prefix such as `/share/`.
 
 Publish from a Markdown file:
 
