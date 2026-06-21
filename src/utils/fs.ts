@@ -1,4 +1,4 @@
-import { mkdir } from 'node:fs/promises';
+import { cp, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 
 export async function ensureParentDir(filePath: string): Promise<void> {
@@ -8,4 +8,9 @@ export async function ensureParentDir(filePath: string): Promise<void> {
 
 export function toFileUrl(filePath: string): string {
   return `file://${path.resolve(filePath)}`;
+}
+
+export async function copyDirectory(source: string, destination: string): Promise<void> {
+  await mkdir(path.dirname(destination), { recursive: true });
+  await cp(source, destination, { recursive: true, force: true });
 }

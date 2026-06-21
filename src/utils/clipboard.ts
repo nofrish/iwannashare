@@ -21,3 +21,24 @@ export async function copyPngToClipboard(imagePath: string): Promise<void> {
     imagePath
   ]);
 }
+
+export async function copyTextToClipboard(value: string): Promise<void> {
+  if (os.platform() !== 'darwin') {
+    throw new Error('Clipboard copy is only supported on macOS.');
+  }
+
+  const child = execFile('pbcopy');
+  child.stdin?.end(value);
+
+  await new Promise<void>((resolve, reject) => {
+    child.on('error', reject);
+    child.on('exit', (code) => {
+      if (code === 0) {
+        resolve();
+        return;
+      }
+
+      reject(new Error(`pbcopy exited with code ${code ?? 'unknown'}.`));
+    });
+  });
+}

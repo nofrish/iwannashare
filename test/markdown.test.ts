@@ -18,6 +18,18 @@ This is **important**.
     expect(document.html).toContain('<strong>important</strong>');
   });
 
+  it('parses optional web publish slug from frontmatter', () => {
+    const document = parseMarkdown(`---
+title: Hello
+slug: hello-share
+---
+
+Body.
+`);
+
+    expect(document.meta.slug).toBe('hello-share');
+  });
+
   it('turns Obsidian-style callouts into semantic aside blocks', () => {
     const document = parseMarkdown(`> [!KEY]
 > The central idea.

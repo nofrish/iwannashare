@@ -34,6 +34,7 @@ function normalizeMeta(data: Record<string, unknown>): ShareDocumentMeta {
   assignString(meta, 'author', data.author);
   assignString(meta, 'source', data.source);
   assignString(meta, 'date', data.date);
+  assignString(meta, 'slug', data.slug);
   return meta;
 }
 

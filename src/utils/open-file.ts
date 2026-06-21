@@ -11,3 +11,7 @@ export async function openFile(filePath: string): Promise<void> {
 
   await execFileAsync('open', [filePath]);
 }
+
+export async function openTarget(target: string): Promise<void> {
+  await openFile(target);
+}

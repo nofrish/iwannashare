@@ -7,6 +7,7 @@ export interface ShareDocumentMeta {
   author?: string;
   source?: string;
   date?: string;
+  slug?: string;
 }
 
 export interface ShareDocument {

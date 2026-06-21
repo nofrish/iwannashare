@@ -1,14 +1,18 @@
 # IWannaShare
 
-Turn Markdown and AI responses into a polished 1080px long image for mobile sharing.
+Turn Markdown and AI responses into polished share outputs:
+
+- a 1080px long PNG image for mobile sharing
+- a static HTML page that can be published through GitHub Pages
 
 IWannaShare is a local-first CLI:
 
 ```text
 Markdown -> HTML/CSS layout -> local Chrome screenshot -> PNG
+Markdown -> static HTML/CSS page -> Git commit/push -> public URL
 ```
 
-The first release intentionally ships one theme: `default`. It is optimized for Chinese mobile reading and WeChat-style sharing.
+The first release intentionally ships one visual direction: `default`. The image output is optimized for Chinese mobile reading and WeChat-style sharing. The web output uses the same warm reading style in a wider static page.
 
 ## Quick Start
 
@@ -52,6 +56,18 @@ Render a Markdown file:
 
 ```bash
 iws ./my-note.md --output ./share.png --copy --open
+```
+
+Export a static web page locally:
+
+```bash
+iws export-web ./my-note.md --output ./web-share --open
+```
+
+Publish a public web page after configuring a GitHub Pages repo:
+
+```bash
+iws publish ./my-note.md --copy-url --open
 ```
 
 ## Codex Skill
@@ -130,6 +146,78 @@ npm run build
 node dist/cli.js ./my-note.md --output ./share.png
 ```
 
+## Static Web Publishing
+
+`iws export-web` writes a standalone static share directory:
+
+```bash
+iws export-web ./my-note.md --output ./web-share
+```
+
+The output contains:
+
+```text
+web-share/
+  index.html
+  source.md
+  assets/iwannashare/fonts/lxgw-bright/...
+```
+
+`source.md` is intentionally included for transparency and future reuse. Treat web export and publish as public output; do not publish private Markdown.
+
+`iws publish` writes the same page into a configured GitHub Pages repository, commits it, pushes it, and prints the public URL.
+
+Create the local config:
+
+```bash
+iws config init \
+  --repo-path ~/Projects/nofrish/nofrish-share \
+  --base-url https://share.example.com \
+  --site-name IWannaShare
+```
+
+This writes:
+
+```text
+~/.config/iwannashare/config.json
+```
+
+Config shape:
+
+```json
+{
+  "publish": {
+    "repoPath": "/path/to/github-pages-repo",
+    "baseUrl": "https://share.example.com",
+    "branch": "main",
+    "contentDir": "share",
+    "assetsDir": "assets/iwannashare",
+    "siteName": "IWannaShare"
+  }
+}
+```
+
+Publish from a Markdown file:
+
+```bash
+iws publish ./my-note.md --slug my-note --copy-url --open
+```
+
+Publish from stdin:
+
+```bash
+iws publish --copy-url <<'MD'
+---
+title: My Public Share
+slug: my-public-share
+---
+
+Markdown content.
+MD
+```
+
+Publishing expects the target repo to be clean and on the configured branch. Use `--no-push` to commit locally without pushing, and `--allow-dirty` only when you intentionally want to publish into a dirty repo.
+
 ## Requirements
 
 - Node.js 20+
@@ -180,17 +268,18 @@ Frontmatter can provide metadata:
 ---
 title: My Share Note
 date: 2026-06-19
+slug: my-share-note
 ---
 ```
 
-The `title` appears as the card title. The `date` appears in the top-right corner. If `date` is omitted, IWannaShare uses the current date.
+The `title` appears as the card/page title. The `date` appears in the PNG. The optional `slug` is used by `iws publish` when no `--slug` argument is provided.
 
 ## Agent Instructions
 
 Use this prompt when giving IWannaShare to an AI agent:
 
 ```text
-You can use IWannaShare to turn a Markdown note or AI answer into a polished 1080px-wide long PNG image for mobile sharing.
+You can use IWannaShare to turn a Markdown note or AI answer into either a polished 1080px-wide long PNG image for mobile sharing, or a static public web page when the user asks for a shareable link.
 
 Use IWannaShare when the user wants to share text-heavy content as an image: an AI answer, summary, recommendation, checklist, explanation, or note. Do not use it for diagrams, charts, photo-style images, or visual assets where the main content is not text.
 
@@ -198,7 +287,11 @@ Before rendering, check the local renderer once with `iws doctor`. If you are in
 
 If `iws` is not installed, install it with `npm install -g github:nofrish/iwannashare`.
 
-Render from stdin when possible: `iws --output <output-file.png>`. Use a Markdown file path when the content already exists as a file: `iws <markdown-file> --output <output-file.png>`. If the user wants to paste the image directly, add `--copy` to copy the PNG to the macOS clipboard. If the user wants to review the result immediately, add `--open` to open the PNG after rendering. If you are inside the repository, use `npm run dev -- --output <output-file.png>` for stdin or `npm run dev -- <markdown-file> --output <output-file.png>` for file input.
+Render PNG from stdin when possible: `iws --output <output-file.png>`. Use a Markdown file path when the content already exists as a file: `iws <markdown-file> --output <output-file.png>`. If the user wants to paste the image directly, add `--copy` to copy the PNG to the macOS clipboard. If the user wants to review the result immediately, add `--open` to open the PNG after rendering.
+
+Publish a web page only when the user asks for a public link or web share. Use `iws publish <markdown-file> --copy-url --open`, or pipe Markdown through stdin with `iws publish --copy-url`. If publish config is missing, ask the user to run `iws config init --repo-path <pages-repo> --base-url <public-url>`.
+
+If you are inside the repository, use `npm run dev -- render --output <output-file.png>` for PNG stdin, `npm run dev -- render <markdown-file> --output <output-file.png>` for PNG files, `npm run dev -- export-web <markdown-file> --output <dir>` for local web export, and `npm run dev -- publish <markdown-file>` for publishing.
 
 Markdown requirements:
 - Add frontmatter with a concise `title` and, when useful, `date` in `YYYY-MM-DD` format.
@@ -222,6 +315,12 @@ After rendering:
 - If `--open` was used successfully, tell the user the image has been opened for review.
 - Mention any rendering failure and the command that failed.
 - If the user asked for review, ask them to inspect the PNG before sending it to others.
+
+After publishing:
+- Return the public URL.
+- Mention whether it was pushed.
+- If `--copy-url` was used successfully, tell the user the URL is ready to paste.
+- Mention any publish failure and the command that failed.
 ```
 
 ## Release Checklist
@@ -235,6 +334,7 @@ npm run test
 npm run build
 npm audit --audit-level=moderate
 npm run render:example
+npm run dev -- export-web examples/ai-share.md --output examples/output/web-export
 ```
 
 Inspect `examples/output/default.png` on a phone-sized screen before tagging a release.
@@ -266,6 +366,9 @@ src/
   renderer/browser.ts     System Chrome discovery and screenshot renderer
   renderer/render.ts      End-to-end render pipeline
   themes/                 Default theme and shared long-image layout
+  web/                    Static web export and publish layout
+  config.ts               User config for web publishing
+  git.ts                  Small Git command wrapper for publishing
 ```
 
 The renderer is intentionally isolated. The first implementation uses HTML/CSS plus a local Chrome-compatible browser, but the parser and theme layer do not depend on Playwright directly.
