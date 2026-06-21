@@ -1,4 +1,4 @@
-import type { Root } from 'mdast';
+import type { Heading, Root } from 'mdast';
 import { toHast } from 'mdast-util-to-hast';
 import { toHtml } from 'hast-util-to-html';
 import remarkGfm from 'remark-gfm';
@@ -13,8 +13,9 @@ const processor = unified().use(remarkParse).use(remarkGfm);
 
 export function parseMarkdown(markdown: string): ShareDocument {
   const parsed = parseFrontmatter(markdown);
+  const meta = normalizeMeta(parsed.data);
   const tree = processor.parse(parsed.content);
-  const transformed = transformCallouts(tree);
+  const transformed = transformCallouts(removeDuplicateTitleHeading(tree, meta.title));
   const hast = toHast(transformed, { allowDangerousHtml: false });
   const html = toHtml(hast, {
     allowDangerousHtml: false,
@@ -22,7 +23,7 @@ export function parseMarkdown(markdown: string): ShareDocument {
   });
 
   return {
-    meta: normalizeMeta(parsed.data),
+    meta,
     html,
     plainText: stripHtml(html)
   };
@@ -92,4 +93,51 @@ function transformCallouts(tree: Root): Root {
   });
 
   return tree;
+}
+
+function removeDuplicateTitleHeading(tree: Root, title: string | undefined): Root {
+  if (!title) {
+    return tree;
+  }
+
+  const firstMeaningfulIndex = tree.children.findIndex((child) => child.type !== 'break');
+  if (firstMeaningfulIndex === -1) {
+    return tree;
+  }
+
+  const first = tree.children[firstMeaningfulIndex];
+  if (first?.type !== 'heading' || first.depth !== 1) {
+    return tree;
+  }
+
+  if (normalizeTitleText(headingText(first)) !== normalizeTitleText(title)) {
+    return tree;
+  }
+
+  tree.children.splice(firstMeaningfulIndex, 1);
+  return tree;
+}
+
+function headingText(node: Heading): string {
+  return node.children
+    .map((child) => {
+      if ('value' in child && typeof child.value === 'string') {
+        return child.value;
+      }
+
+      if ('children' in child && Array.isArray(child.children)) {
+        return child.children
+          .map((grandchild) =>
+            'value' in grandchild && typeof grandchild.value === 'string' ? grandchild.value : ''
+          )
+          .join('');
+      }
+
+      return '';
+    })
+    .join('');
+}
+
+function normalizeTitleText(value: string): string {
+  return value.replace(/\s+/g, ' ').trim();
 }
